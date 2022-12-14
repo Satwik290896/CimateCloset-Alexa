@@ -116,10 +116,10 @@ class LaunchRequestHandler(AbstractRequestHandler):
         speak_output = ""
         
         if len(session_attributes['jackets']) == 0:
-            speak_output = "Please list your jackets from lightest to heaviest."
+            speak_output = "Welcome to Climate Closet. Please list your jackets from lightest to heaviest for a Jacket Recommendation"
             session_attributes["visits"] = 0
         else:
-            speak_output += "Let's check the coat for your weather. Where are you right now?"
+            speak_output += "Hmmm! Let's check the jacket for your weather. Where are you right now?"
 
         session_attributes["checking_visits"] = False
         persistent_attributes["visits"] = session_attributes["visits"]
@@ -159,7 +159,7 @@ class GetJacketIntentHandler(AbstractRequestHandler):
         handler_input.attributes_manager.session_attributes = session_attributes
         handler_input.attributes_manager.persistent_attributes = persistent_attributes
 
-        speak_output = "Ok. Let's check the coat for your weather. Where are you right now? You can tell me the city name."
+        speak_output = "Ok. You have {}. Let's check the jacket for your weather. Where are you right now? You can tell me the city name.".format(ask_utils.request_util.get_slot(handler_input, "jacket").value)
 
 
         return (
@@ -186,13 +186,13 @@ class JacketChoiceIntent(AbstractRequestHandler):
         url = api_address + city
         json_data = requests.get(url).json()
         formatted_json = json_data['weather'][0]['main']
-        temp = json_data['main']['temp']
+        temp = round(json_data['main']['temp'])
         name = json_data['name']
         sys = json_data['sys']['country']
-        wind = json_data['wind']['speed']
+        wind = round(json_data['wind']['speed'])
         description = json_data['weather'][0]['description']
         speak_output = "Perfect! you live in {}. ".format(city)
-        speak_output += "The weather is {}, {} and temp is {} of {} and the wind speed is {}.".format(formatted_json, description, temp, name, wind)
+        speak_output += "The weather is {}, {} and temp is {} degrees celsius and the wind speed is {} KMPH.".format(formatted_json, description, temp, name, wind)
         generic = " The best jacket would be "
         if temp < 5:
             speak_output += generic + session_attributes["jackets"][-1]
