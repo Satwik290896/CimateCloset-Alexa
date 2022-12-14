@@ -192,7 +192,8 @@ class JacketChoiceIntent(AbstractRequestHandler):
         wind = round(json_data['wind']['speed'])
         description = json_data['weather'][0]['description']
         speak_output = "Perfect! you live in {}. ".format(city)
-        speak_output += "The weather is {}, {} and temp is {} degrees celsius and the wind speed is {} KMPH.".format(formatted_json, description, temp, name, wind)
+        
+        speak_output += "The weather is {}, {}. The Temperature is {} degrees celsius. The wind speed is {} KMPH.".format(formatted_json, description, temp, wind)
         generic = " The best jacket would be "
         if temp < 5:
             speak_output += generic + session_attributes["jackets"][-1]
